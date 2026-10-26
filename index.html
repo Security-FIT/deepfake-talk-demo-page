@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Naskenované deepfakom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; }
+  /* Layout: jeden úzky stĺpec ako displej telefónu po naskenovaní, výstražná páska hore */
+  :root {
+    --bg: #f5f6f1;
+    --surface: #ffffff;
+    --fg: #16191b;
+    --muted: #5c6460;
+    --line: #dcdfd6;
+    --tape: #f2c200;
+    --tape-ink: #16191b;
+    --ok: #1f7a4d;
+    --bad: #b3261e;
+    --link: #0b5cad;
+    --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+    --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121513; --surface: #1b1f1c; --fg: #eef0ea; --muted: #a2aaa4; --line: #2e3430;
+      --tape: #f2c200; --tape-ink: #121513; --ok: #5cc28d; --bad: #f2867d; --link: #7db7f2;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121513; --surface: #1b1f1c; --fg: #eef0ea; --muted: #a2aaa4; --line: #2e3430;
+    --tape: #f2c200; --tape-ink: #121513; --ok: #5cc28d; --bad: #f2867d; --link: #7db7f2;
+    color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--fg); font: 400 1.0625rem/1.6 var(--body); }
+
+  .tape {
+    background: repeating-linear-gradient(-45deg, var(--tape) 0 22px, var(--tape-ink) 22px 44px);
+    height: 18px;
+  }
+  .tape-label {
+    background: var(--tape); color: var(--tape-ink);
+    font: 500 0.8125rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase;
+    padding-block: 10px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    text-align: center;
+  }
+
+  main {
+    max-width: 36rem; margin: 0 auto;
+    display: grid; gap: 2rem;
+    padding-block: 2.5rem 3rem;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  h1 {
+    font: 800 clamp(2rem, 7vw, 2.9rem)/1.05 var(--display);
+    letter-spacing: -0.02em; margin: 0; text-wrap: balance;
+  }
+  .lead { margin: 0.9rem 0 0; color: var(--muted); max-width: 34rem; }
+
+  h2 {
+    font: 500 0.8125rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 0.75rem;
+  }
+
+  .log { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .log li {
+    display: grid; grid-template-columns: 2rem 1fr; gap: 0.5rem; align-items: baseline;
+    padding-block: 0.8rem; border-bottom: 1px solid var(--line);
+  }
+  .mark { font: 500 1.05rem/1 var(--mono); }
+  .mark.ok { color: var(--ok); }
+  .mark.bad { color: var(--bad); }
+  .log small { display: block; color: var(--muted); font-size: 0.9rem; }
+
+  .note {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 1rem 1.1rem; margin: 0; font-size: 0.975rem;
+  }
+
+  .links { display: grid; gap: 0.6rem; }
+  .links a {
+    display: grid; gap: 0.15rem; text-decoration: none; color: var(--fg);
+    padding: 0.9rem 1.1rem; border: 1px solid var(--line); border-radius: 6px; background: var(--surface);
+  }
+  .links a:hover { border-color: var(--link); }
+  .links a:focus-visible { outline: 3px solid var(--link); outline-offset: 2px; }
+  .links strong { font-weight: 600; color: var(--link); }
+  .links span { color: var(--muted); font-size: 0.925rem; }
+
+  footer { color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<div class="tape" aria-hidden="true"></div>
+<div class="tape-label">Toto mohol byť skutočný útok</div>
+
+<main>
+  <header>
+    <h1>Práve ste poslúchli AI.</h1>
+    <p class="lead">Nebojte sa, nie ste sami. Rozhliadnite sa, pár ľudí okolo vás práve číta to isté.</p>
+  </header>
+
+  <section aria-labelledby="log-h">
+    <h2 id="log-h">Čo sa práve stalo</h2>
+    <ul class="log">
+      <li><span class="mark ok" aria-hidden="true">✓</span><div>Vedeli ste, že hovorí AI.<small>Anton vám to povedal hneď na začiatku.</small></div></li>
+      <li><span class="mark ok" aria-hidden="true">✓</span><div>Aj tak ste vytiahli mobil a naskenovali neznámy QR kód.<small>Na prednáške o deepfakoch. Len tak hovoríme.</small></div></li>
+      <li><span class="mark bad" aria-hidden="true">✗</span><div>Číslo karty ste nezadali.<small>Teda dúfame. Táto stránka ho nemá kam uložiť. Ak ste ho aj tak niekam zadali, zavolajte do banky. Tej skutočnej.</small></div></li>
+    </ul>
+  </section>
+
+  <p class="note">Táto stránka nemá formulár, nič nezbiera a nikam vás neposiela. Skutočný útočník by vás na tomto mieste presmeroval na stránku, ktorá vyzerá ako vaša banka. A vy by ste tam išli, však?</p>
+
+  <section aria-labelledby="links-h">
+    <h2 id="links-h">Kto za tým stojí</h2>
+    <div class="links">
+      <a href="https://www.fit.vut.cz/person/ifirc/" target="_blank" rel="noopener">
+        <strong>Anton Firc</strong>
+        <span>Ten skutočný. FIT VUT v Brne.</span>
+      </a>
+      <a href="https://www.fit.vut.cz/research/group/security@fit/" target="_blank" rel="noopener">
+        <strong>Security@FIT</strong>
+        <span>Ľudia z FIT VUT, ktorí takéto veci skúmajú, aby ste nemuseli.</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>Slajdy vám Anton rád pošle. QR kód nepotrebujete, už berie aj karty.</footer>
+</main>
+</body>
+</html>
